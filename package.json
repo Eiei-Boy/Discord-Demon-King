@@ -1,29 +1,38 @@
 {
-  "name": "discord-demon-king",
-  "version": "1.0.0",
-  "description": "Discord bot built with TypeScript",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node src/index.ts",
-    "watch": "tsc -w",
-    "deploy": "ts-node src/deploy-commands.ts"
-  },
-  "keywords": [
-    "discord",
-    "bot",
-    "typescript"
-  ],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1"
-  },
-  "devDependencies": {
-    "@types/node": "^20.10.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.2"
-  }
+    "name": "discord-demon-king",
+    "version": "1.0.0",
+    "description": "Discord bot built with TypeScript",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "dev": "ts-node src/index.ts",
+        "watch": "tsc -w",
+        "deploy": "ts-node src/deploy-commands.ts",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "prepare": "husky"
+    },
+    "keywords": [
+        "discord",
+        "bot",
+        "typescript"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "discord.js": "^14.14.1",
+        "dotenv": "^16.3.1"
+    },
+    "devDependencies": {
+        "@types/node": "^20.10.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.7",
+        "prettier": "^3.7.4",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.2"
+    },
+    "lint-staged": {
+        "*.{ts,js,json,md}": "prettier --write"
+    }
 }

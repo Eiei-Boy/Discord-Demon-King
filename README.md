@@ -12,31 +12,31 @@ A Discord bot built with TypeScript and discord.js.
 
 1. **Install dependencies:**
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 2. **Configure environment variables:**
 
-   Copy `.env.example` to `.env` and fill in your bot token:
+    Copy `.env.example` to `.env` and fill in your bot token:
 
-   ```bash
-   cp .env.example .env
-   ```
+    ```bash
+    cp .env.example .env
+    ```
 
-   Edit `.env` and add your Discord bot token.
+    Edit `.env` and add your Discord bot token.
 
 3. **Build the project:**
 
-   ```bash
-   npm run build
-   ```
+    ```bash
+    npm run build
+    ```
 
 4. **Start the bot:**
 
-   ```bash
-   npm start
-   ```
+    ```bash
+    npm start
+    ```
 
 ## Development
 
