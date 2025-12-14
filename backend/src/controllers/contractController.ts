@@ -273,13 +273,20 @@ export const cancelContract = async (req: Request, res: Response) => {
  */
 export const createSubmission = async (req: Request, res: Response) => {
 	try {
-		const { discordId, guildId, questionNumber, questionTitle, difficulty } =
-			req.body;
+		const {
+			discordId,
+			guildId,
+			questionNumber,
+			questionTitle,
+			difficulty,
+		} = req.body;
 
 		if (!discordId || !guildId || !questionNumber) {
 			return res
 				.status(400)
-				.json({ error: 'discordId, guildId, and questionNumber are required' });
+				.json({
+					error: 'discordId, guildId, and questionNumber are required',
+				});
 		}
 
 		const user = await prisma.user.findUnique({

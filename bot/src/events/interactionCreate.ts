@@ -99,7 +99,8 @@ const event: Event = {
 
             // Handle contract command autocomplete
             if (commandName === 'contract') {
-                const { handleContractAutocomplete } = await import('../commands/leetcode/contract');
+                const { handleContractAutocomplete } =
+                    await import('../commands/leetcode/contract');
                 await handleContractAutocomplete(interaction);
             }
         }

@@ -15,13 +15,10 @@ const command: Command = {
                 .setDescription('The LeetCode question number (e.g., 1, 42, 1337)')
                 .setRequired(true)
                 .setMinValue(1)
-                .setMaxValue(10000)
+                .setMaxValue(10000),
         )
         .addStringOption(option =>
-            option
-                .setName('title')
-                .setDescription('Question title (optional)')
-                .setRequired(false)
+            option.setName('title').setDescription('Question title (optional)').setRequired(false),
         )
         .addStringOption(option =>
             option
@@ -31,15 +28,17 @@ const command: Command = {
                 .addChoices(
                     { name: '🟢 Easy', value: 'Easy' },
                     { name: '🟡 Medium', value: 'Medium' },
-                    { name: '🔴 Hard', value: 'Hard' }
-                )
+                    { name: '🔴 Hard', value: 'Hard' },
+                ),
         ) as SlashCommandBuilder,
 
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
 
         if (!interaction.guildId) {
-            await interaction.editReply({ content: '❌ This command can only be used in a server!' });
+            await interaction.editReply({
+                content: '❌ This command can only be used in a server!',
+            });
             return;
         }
 
@@ -60,8 +59,7 @@ const command: Command = {
 
         if (!contractResult.data.isActive) {
             await interaction.editReply({
-                content:
-                    '❌ Your contract is inactive. Use `/contract create` to start a new one!',
+                content: '❌ Your contract is inactive. Use `/contract create` to start a new one!',
             });
             return;
         }
@@ -128,9 +126,17 @@ const command: Command = {
                     inline: true,
                 },
                 { name: '\u200B', value: '\u200B', inline: true },
-                { name: '🔥 Current Streak', value: `${contract.currentStreak} days`, inline: true },
+                {
+                    name: '🔥 Current Streak',
+                    value: `${contract.currentStreak} days`,
+                    inline: true,
+                },
                 { name: '🏆 Best Streak', value: `${contract.longestStreak} days`, inline: true },
-                { name: '📊 Total', value: `${contract.totalSubmissions} submissions`, inline: true }
+                {
+                    name: '📊 Total',
+                    value: `${contract.totalSubmissions} submissions`,
+                    inline: true,
+                },
             )
             .setFooter({ text: 'Keep up the great work!' })
             .setTimestamp();

@@ -10,10 +10,7 @@ interface ApiResponse<T> {
     error?: string;
 }
 
-async function apiRequest<T>(
-    endpoint: string,
-    options: RequestInit = {}
-): Promise<ApiResponse<T>> {
+async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             ...options,
@@ -52,14 +49,20 @@ export interface User {
     updatedAt: string;
 }
 
-export async function getOrCreateUser(discordId: string, timezone?: string): Promise<ApiResponse<User>> {
+export async function getOrCreateUser(
+    discordId: string,
+    timezone?: string,
+): Promise<ApiResponse<User>> {
     return apiRequest<User>('/users', {
         method: 'POST',
         body: JSON.stringify({ discordId, timezone }),
     });
 }
 
-export async function updateUserTimezone(discordId: string, timezone: string): Promise<ApiResponse<User>> {
+export async function updateUserTimezone(
+    discordId: string,
+    timezone: string,
+): Promise<ApiResponse<User>> {
     return apiRequest<User>(`/users/${discordId}/timezone`, {
         method: 'PATCH',
         body: JSON.stringify({ timezone }),
@@ -101,11 +104,17 @@ export async function createContract(params: CreateContractParams): Promise<ApiR
     });
 }
 
-export async function getContract(discordId: string, guildId: string): Promise<ApiResponse<Contract>> {
+export async function getContract(
+    discordId: string,
+    guildId: string,
+): Promise<ApiResponse<Contract>> {
     return apiRequest<Contract>(`/contracts/${discordId}/${guildId}`);
 }
 
-export async function cancelContract(discordId: string, guildId: string): Promise<ApiResponse<{ message: string; contract: Contract }>> {
+export async function cancelContract(
+    discordId: string,
+    guildId: string,
+): Promise<ApiResponse<{ message: string; contract: Contract }>> {
     return apiRequest(`/contracts/${discordId}/${guildId}`, {
         method: 'DELETE',
     });
@@ -135,7 +144,9 @@ export interface SubmissionResult {
     contract: Contract;
 }
 
-export async function createSubmission(params: CreateSubmissionParams): Promise<ApiResponse<SubmissionResult>> {
+export async function createSubmission(
+    params: CreateSubmissionParams,
+): Promise<ApiResponse<SubmissionResult>> {
     return apiRequest<SubmissionResult>('/submissions', {
         method: 'POST',
         body: JSON.stringify(params),
@@ -144,7 +155,7 @@ export async function createSubmission(params: CreateSubmissionParams): Promise<
 
 export async function hasSubmittedToday(
     discordId: string,
-    guildId: string
+    guildId: string,
 ): Promise<ApiResponse<{ hasSubmitted: boolean; submission?: Submission }>> {
     return apiRequest(`/submissions/${discordId}/${guildId}/today`);
 }

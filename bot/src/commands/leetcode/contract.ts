@@ -38,35 +38,37 @@ const command: Command = {
                     option
                         .setName('time')
                         .setDescription('Daily reminder time (HH:MM format, e.g., 09:00)')
-                        .setRequired(true)
+                        .setRequired(true),
                 )
                 .addChannelOption(option =>
                     option
                         .setName('reminder_channel')
                         .setDescription('Channel for daily reminders')
                         .addChannelTypes(ChannelType.GuildText)
-                        .setRequired(true)
+                        .setRequired(true),
                 )
                 .addChannelOption(option =>
                     option
                         .setName('fail_channel')
                         .setDescription('Channel to announce failures (shame channel)')
                         .addChannelTypes(ChannelType.GuildText)
-                        .setRequired(true)
+                        .setRequired(true),
                 )
                 .addStringOption(option =>
                     option
                         .setName('timezone')
                         .setDescription('Your timezone (default: UTC)')
                         .setRequired(false)
-                        .setAutocomplete(true)
-                )
+                        .setAutocomplete(true),
+                ),
         )
         .addSubcommand(subcommand =>
-            subcommand.setName('status').setDescription('View your current contract status and stats')
+            subcommand
+                .setName('status')
+                .setDescription('View your current contract status and stats'),
         )
         .addSubcommand(subcommand =>
-            subcommand.setName('cancel').setDescription('Cancel your active contract')
+            subcommand.setName('cancel').setDescription('Cancel your active contract'),
         ) as SlashCommandBuilder,
 
     async execute(interaction: ChatInputCommandInteraction) {
@@ -134,7 +136,8 @@ async function handleCreate(interaction: ChatInputCommandInteraction) {
     if (!result.success) {
         if (result.error?.includes('already exists')) {
             await interaction.editReply({
-                content: '❌ You already have an active contract in this server! Use `/contract cancel` first if you want to create a new one.',
+                content:
+                    '❌ You already have an active contract in this server! Use `/contract cancel` first if you want to create a new one.',
             });
         } else {
             await interaction.editReply({
@@ -169,7 +172,7 @@ async function handleCreate(interaction: ChatInputCommandInteraction) {
                     "2. Use `/submit <question_number>` to mark today's problem as done\n" +
                     "3. If you don't submit before midnight UTC, you'll be shamed!\n" +
                     '4. Build your streak and track your progress!',
-            }
+            },
         )
         .setFooter({ text: 'Good luck on your LeetCode journey! 💪' })
         .setTimestamp();
@@ -189,7 +192,8 @@ async function handleStatus(interaction: ChatInputCommandInteraction) {
 
     if (!result.success || !result.data) {
         await interaction.editReply({
-            content: "❌ You don't have an active contract in this server. Use `/contract create` to start one!",
+            content:
+                "❌ You don't have an active contract in this server. Use `/contract create` to start one!",
         });
         return;
     }
@@ -208,17 +212,31 @@ async function handleStatus(interaction: ChatInputCommandInteraction) {
         .setTitle('📊 Contract Status')
         .setThumbnail(interaction.user.displayAvatarURL())
         .addFields(
-            { name: 'Status', value: `${statusEmoji} ${contract.isActive ? 'Active' : 'Inactive'}`, inline: true },
-            { name: "Today's Task", value: `${submittedEmoji} ${hasSubmittedToday ? 'Completed!' : 'Pending...'}`, inline: true },
+            {
+                name: 'Status',
+                value: `${statusEmoji} ${contract.isActive ? 'Active' : 'Inactive'}`,
+                inline: true,
+            },
+            {
+                name: "Today's Task",
+                value: `${submittedEmoji} ${hasSubmittedToday ? 'Completed!' : 'Pending...'}`,
+                inline: true,
+            },
             { name: '\u200B', value: '\u200B', inline: true },
             { name: '🔥 Current Streak', value: `${contract.currentStreak} days`, inline: true },
             { name: '🏆 Longest Streak', value: `${contract.longestStreak} days`, inline: true },
             { name: '📝 Total Submissions', value: `${contract.totalSubmissions}`, inline: true },
             { name: '⏰ Reminder Time', value: contract.reminderTime, inline: true },
-            { name: '📢 Reminder Channel', value: `<#${contract.reminderChannelId}>`, inline: true },
-            { name: '😈 Shame Channel', value: `<#${contract.failChannelId}>`, inline: true }
+            {
+                name: '📢 Reminder Channel',
+                value: `<#${contract.reminderChannelId}>`,
+                inline: true,
+            },
+            { name: '😈 Shame Channel', value: `<#${contract.failChannelId}>`, inline: true },
         )
-        .setFooter({ text: `Contract started: ${new Date(contract.createdAt).toLocaleDateString()}` })
+        .setFooter({
+            text: `Contract started: ${new Date(contract.createdAt).toLocaleDateString()}`,
+        })
         .setTimestamp();
 
     // Add recent submissions if available
@@ -227,7 +245,7 @@ async function handleStatus(interaction: ChatInputCommandInteraction) {
             .slice(0, 5)
             .map(
                 (s, i) =>
-                    `${i + 1}. Problem #${s.questionNumber}${s.difficulty ? ` (${s.difficulty})` : ''} - ${new Date(s.submittedAt).toLocaleDateString()}`
+                    `${i + 1}. Problem #${s.questionNumber}${s.difficulty ? ` (${s.difficulty})` : ''} - ${new Date(s.submittedAt).toLocaleDateString()}`,
             )
             .join('\n');
 
@@ -260,7 +278,7 @@ async function handleCancel(interaction: ChatInputCommandInteraction) {
         .setDescription('Your daily LeetCode contract has been cancelled.')
         .addFields({
             name: '💡 Tip',
-            value: 'You can always start a new contract with `/contract create` when you\'re ready to commit again!',
+            value: "You can always start a new contract with `/contract create` when you're ready to commit again!",
         })
         .setTimestamp();
 
@@ -270,12 +288,14 @@ async function handleCancel(interaction: ChatInputCommandInteraction) {
 export default command;
 
 // Autocomplete handler for timezone
-export async function handleContractAutocomplete(interaction: import('discord.js').AutocompleteInteraction) {
+export async function handleContractAutocomplete(
+    interaction: import('discord.js').AutocompleteInteraction,
+) {
     const focusedOption = interaction.options.getFocused(true);
 
     if (focusedOption.name === 'timezone') {
         const filtered = COMMON_TIMEZONES.filter(tz =>
-            tz.toLowerCase().includes(focusedOption.value.toLowerCase())
+            tz.toLowerCase().includes(focusedOption.value.toLowerCase()),
         ).slice(0, 25);
 
         await interaction.respond(filtered.map(tz => ({ name: tz, value: tz })));

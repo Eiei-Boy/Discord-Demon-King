@@ -42,7 +42,9 @@ export function scheduleDailyReminder(client: Client, config: ReminderConfig): v
                 const todayResult = await api.hasSubmittedToday(config.discordId, config.guildId);
 
                 if (todayResult.data?.hasSubmitted) {
-                    logger.info(`User ${config.discordId} already submitted today, skipping reminder`);
+                    logger.info(
+                        `User ${config.discordId} already submitted today, skipping reminder`,
+                    );
                     return;
                 }
 
@@ -53,7 +55,7 @@ export function scheduleDailyReminder(client: Client, config: ReminderConfig): v
                         `<@${config.discordId}>, ⏰ **Daily LeetCode Reminder!**\n\n` +
                             `Time to practice! 💪\n` +
                             `Use \`/submit <question_number>\` after solving a problem.\n\n` +
-                            `*Don't forget - you must submit before midnight UTC to maintain your streak!*`
+                            `*Don't forget - you must submit before midnight UTC to maintain your streak!*`,
                     );
                     logger.info(`Sent reminder to ${config.discordId}`);
                 } else {
@@ -65,11 +67,13 @@ export function scheduleDailyReminder(client: Client, config: ReminderConfig): v
         },
         {
             timezone: config.timezone || 'UTC',
-        }
+        },
     );
 
     scheduledJobs.set(jobKey, job);
-    logger.info(`Scheduled reminder for ${config.discordId} at ${config.reminderTime} (${config.timezone || 'UTC'})`);
+    logger.info(
+        `Scheduled reminder for ${config.discordId} at ${config.reminderTime} (${config.timezone || 'UTC'})`,
+    );
 }
 
 /**
@@ -144,7 +148,9 @@ function scheduleMidnightCheck(client: Client): void {
                 // Send shame messages
                 for (const failed of failedUsers) {
                     try {
-                        const failChannel = client.channels.cache.get(failed.failChannelId) as TextChannel;
+                        const failChannel = client.channels.cache.get(
+                            failed.failChannelId,
+                        ) as TextChannel;
 
                         if (failChannel) {
                             const streakMessage =
@@ -156,12 +162,15 @@ function scheduleMidnightCheck(client: Client): void {
                                 `⚠️ **CONTRACT FAILED!**\n\n` +
                                     `<@${failed.discordId}> failed to submit their LeetCode solution before midnight UTC!\n` +
                                     `${streakMessage}\n\n` +
-                                    `*Their streak has been reset to 0. Better luck tomorrow!* 💀`
+                                    `*Their streak has been reset to 0. Better luck tomorrow!* 💀`,
                             );
                             logger.info(`Sent failure notification for ${failed.discordId}`);
                         }
                     } catch (error) {
-                        logger.error(`Error sending failure notification for ${failed.discordId}:`, error);
+                        logger.error(
+                            `Error sending failure notification for ${failed.discordId}:`,
+                            error,
+                        );
                     }
                 }
 
@@ -172,7 +181,7 @@ function scheduleMidnightCheck(client: Client): void {
         },
         {
             timezone: 'UTC',
-        }
+        },
     );
 
     logger.info('Midnight check scheduled for 00:05 UTC');
