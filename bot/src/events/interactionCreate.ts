@@ -95,11 +95,13 @@ const event: Event = {
 
         // Handle autocomplete
         else if (interaction.isAutocomplete()) {
-            // Example: Provide autocomplete suggestions
-            // const focusedValue = interaction.options.getFocused();
-            // const choices = ['option1', 'option2', 'option3'];
-            // const filtered = choices.filter(choice => choice.startsWith(focusedValue));
-            // await interaction.respond(filtered.map(choice => ({ name: choice, value: choice })));
+            const commandName = interaction.commandName;
+
+            // Handle contract command autocomplete
+            if (commandName === 'contract') {
+                const { handleContractAutocomplete } = await import('../commands/leetcode/contract');
+                await handleContractAutocomplete(interaction);
+            }
         }
     },
 };

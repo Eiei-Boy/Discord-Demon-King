@@ -33,11 +33,25 @@ async function deployCommands() {
         // Check for --guild flag for guild-specific deployment
         const deployToGuild = process.argv.includes('--guild');
 
-        if (deployToGuild && guildId) {
+        if (!clientId) {
+            // This is actually already handled by the initial check, but good practice
+            logger.error('CLIENT_ID is missing.');
+            process.exit(1);
+        }
+
+        if (deployToGuild) {
+            // FIX 1: Enforce guildId exists when the --guild flag is present
+            if (!guildId) {
+                logger.error('The --guild flag was used, but GUILD_ID is not set in the .env file.');
+                process.exit(1);
+            }
+            
             // Deploy to specific guild (instant update, good for testing)
             logger.info(`Deploying commands to guild: ${guildId}`);
 
-            await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
+            // FIX 2: Use the non-null assertion (!) on clientId and guildId 
+            // because we JUST checked them to ensure they are defined.
+            await rest.put(Routes.applicationGuildCommands(clientId!, guildId!), { 
                 body: commands,
             });
 
@@ -46,7 +60,9 @@ async function deployCommands() {
             // Deploy globally (takes up to 1 hour to propagate)
             logger.info('Deploying commands globally...');
 
-            await rest.put(Routes.applicationCommands(clientId), {
+            // FIX 3: Use the non-null assertion (!) on clientId 
+            // because we checked it at the start.
+            await rest.put(Routes.applicationCommands(clientId!), {
                 body: commands,
             });
 

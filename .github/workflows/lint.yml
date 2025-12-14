@@ -1,25 +1,25 @@
-name: Linting
+name: Bot Linting
 
 on:
     push:
         branches-ignore: [main]
+        paths:
+            - 'bot/**'
     pull_request:
         branches: [main]
+        paths:
+            - 'bot/**'
     workflow_dispatch: {}
 
 jobs:
     lint-bot:
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: bot
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
-
-            - uses: actions/cache@v3
-              with:
-                  path: bot/node_modules
-                  key: ${{ runner.os }}-node-bot-${{ hashFiles('bot/package-lock.json') }}
-                  restore-keys: |
-                      ${{ runner.os }}-node-bot-
 
             - name: Set up Node.js
               uses: actions/setup-node@v4
@@ -28,10 +28,14 @@ jobs:
                   cache: 'npm'
                   cache-dependency-path: bot/package-lock.json
 
-            - name: Install dependencies (bot)
-              working-directory: bot
-              run: npm i
+            - name: Install dependencies
+              run: npm ci
 
-            - name: Run ESLint (bot)
-              working-directory: bot
-              run: npm run lint --max-warnings=0
+            - name: Run Prettier check
+              run: npm run format:check
+
+            - name: Run ESLint
+              run: npm run lint
+
+            - name: TypeScript type check
+              run: npm run build

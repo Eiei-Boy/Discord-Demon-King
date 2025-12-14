@@ -4,6 +4,7 @@ import { ExtendedClient, Command } from './types';
 import { loadCommands } from './commands';
 import { loadEvents } from './events';
 import { logger } from './utils/logger';
+import { initializeScheduler } from './services/scheduler';
 
 // Load environment variables
 dotenv.config();
@@ -46,6 +47,10 @@ async function main() {
         // Login to Discord
         logger.info('Logging in to Discord...');
         await client.login(token);
+
+        // Initialize scheduler after login (needs client to be ready)
+        logger.info('Initializing scheduler...');
+        await initializeScheduler(client);
     } catch (error) {
         logger.error('Failed to start bot:', error);
         process.exit(1);

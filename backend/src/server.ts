@@ -3,9 +3,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import path from 'path';
 import { env } from './config/env';
 import rateLimit from 'express-rate-limit';
+import contractRoutes from './routes/contractRoutes';
 
 const PORT = env.port;
 
@@ -46,6 +46,8 @@ const apiV1 = express.Router();
 // Apply rate limiter and auth middleware to protected routes
 apiV1.use(limiter);
 
+// Contract routes (for Discord bot)
+apiV1.use('/contract', contractRoutes);
 
 app.use('/api/v1', apiV1);
 app.get('/health', (_req, res) => res.json({ ok: true }));
