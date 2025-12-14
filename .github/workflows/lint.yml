@@ -1,0 +1,37 @@
+name: Linting
+
+on:
+    push:
+        branches-ignore: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch: {}
+
+jobs:
+    lint-bot:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - uses: actions/cache@v3
+              with:
+                  path: bot/node_modules
+                  key: ${{ runner.os }}-node-bot-${{ hashFiles('bot/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-node-bot-
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: 'npm'
+                  cache-dependency-path: bot/package-lock.json
+
+            - name: Install dependencies (bot)
+              working-directory: bot
+              run: npm i
+
+            - name: Run ESLint (bot)
+              working-directory: bot
+              run: npm run lint --max-warnings=0

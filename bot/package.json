@@ -12,7 +12,8 @@
         "deploy:guild": "ts-node src/deploy-commands.ts --guild",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "lint": "eslint"
     },
     "keywords": [
         "discord",
