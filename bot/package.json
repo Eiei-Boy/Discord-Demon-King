@@ -9,9 +9,11 @@
         "dev": "ts-node src/index.ts",
         "watch": "tsc -w",
         "deploy": "ts-node src/deploy-commands.ts",
+        "deploy:guild": "ts-node src/deploy-commands.ts --guild",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "prepare": "husky"
+        "prepare": "husky",
+        "lint": "eslint"
     },
     "keywords": [
         "discord",
@@ -22,10 +24,12 @@
     "license": "MIT",
     "dependencies": {
         "discord.js": "^14.14.1",
-        "dotenv": "^16.3.1"
+        "dotenv": "^16.3.1",
+        "node-cron": "^4.2.1"
     },
     "devDependencies": {
         "@types/node": "^20.10.0",
+        "@types/node-cron": "^3.0.11",
         "husky": "^9.1.7",
         "lint-staged": "^16.2.7",
         "prettier": "^3.7.4",

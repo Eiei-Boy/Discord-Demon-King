@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Discord user - stores basic user info
+model User {
+  id        String   @id @default(uuid())
+  discordId String   @unique
+  timezone  String   @default("UTC") // User's preferred timezone (e.g., "America/New_York")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contracts Contract[]
+
+  @@map("users")
+}
+
+// LeetCode contract - daily commitment to solve problems
+model Contract {
+  id                String   @id @default(uuid())
+  userId            String
+  guildId           String // Discord server ID
+  reminderChannelId String // Channel to send reminders
+  failChannelId     String // Channel to announce failures
+  reminderTime      String // HH:MM format (in user's timezone)
+  isActive          Boolean  @default(true)
+  currentStreak     Int      @default(0)
+  longestStreak     Int      @default(0)
+  totalSubmissions  Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+
+  @@unique([userId, guildId]) // One active contract per user per guild
+  @@map("contracts")
+}
+
+// Individual LeetCode submission
+model Submission {
+  id             String   @id @default(uuid())
+  contractId     String
+  questionNumber Int // LeetCode question number
+  questionTitle  String? // Optional: question title
+  difficulty     String? // Optional: easy, medium, hard
+  submittedAt    DateTime @default(now())
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("submissions")
+}
+
+// Scheduled jobs - for bot recovery after restart
+model ScheduledJob {
+  id             String   @id @default(uuid())
+  jobType        String // "reminder" or "midnight_check"
+  userId         String? // For reminder jobs
+  guildId        String? // For context
+  cronExpression String // Cron expression for the job
+  nextRunAt      DateTime // When the job should next run
+  isActive       Boolean  @default(true)
+  metadata       Json? // Additional job data (channel IDs, etc.)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([jobType, userId, guildId]) // Prevent duplicate jobs
+  @@map("scheduled_jobs")
+}
